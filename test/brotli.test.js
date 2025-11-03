@@ -9,7 +9,7 @@ const unbrotli = promisify(zlib.brotliDecompress)
 
 describe('brotli', () => {
   const hexo = new Hexo(__dirname)
-  const b = require('../lib/filter').brotliFn.bind(hexo)
+  const b = require('../lib/zlib').brotliFn.bind(hexo)
   const path = 'foo.txt'
   const input = 'Lorem ipsum dolor sit amet consectetur adipiscing elit fusce'
 
@@ -46,13 +46,6 @@ describe('brotli', () => {
       expect(resultUnbr.toString()).toBe(input)
       expect(expectedUnbr.toString()).toBe(input)
     })
-  })
-
-  test('disable', async () => {
-    hexo.config.minify.brotli.enable = false
-    const result = await b()
-
-    expect(result).toBeUndefined()
   })
 
   test('empty file', async () => {

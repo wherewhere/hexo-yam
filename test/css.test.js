@@ -6,7 +6,7 @@ const CleanCSS = require('clean-css')
 
 describe('css', () => {
   const hexo = new Hexo(__dirname)
-  const c = require('../lib/filter').minifyCss.bind(hexo)
+  const c = require('../lib/css').minifyCss.bind(hexo)
   const input = 'foo { bar: baz; } foo { aaa: bbb; }'
   const path = 'foo.css'
 
@@ -29,17 +29,10 @@ describe('css', () => {
     expect(result).toBe(styles)
   })
 
-  test('disable', async () => {
-    hexo.config.minify.css.enable = false
-    const result = await c(input, { path })
-
-    expect(result).toBeUndefined()
-  })
-
   test('empty file', async () => {
     const result = await c('', { path })
 
-    expect(result).toBeUndefined()
+    expect(result).toBe('')
   })
 
   test('option', async () => {

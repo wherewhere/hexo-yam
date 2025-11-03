@@ -5,7 +5,7 @@ const Hexo = require('hexo')
 
 describe('xml', () => {
   const hexo = new Hexo(__dirname)
-  const x = require('../lib/filter').minifyXml.bind(hexo)
+  const x = require('../lib/xml').minifyXml.bind(hexo)
   const path = 'foo.xml'
   const input = '<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">\n  <!-- foo bar -->\n  <title>foo</title>\n</feed>'
   const expected = '<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title>foo</title></feed>'
@@ -39,13 +39,6 @@ describe('xml', () => {
     output.on('end', () => {
       expect(result).toBe(expected)
     })
-  })
-
-  test('disable', async () => {
-    hexo.config.minify.xml.enable = false
-    const result = await x()
-
-    expect(result).toBeUndefined()
   })
 
   test('option - removeComments', async () => {

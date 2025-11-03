@@ -6,7 +6,7 @@ const { optimize: svgOptimize } = require('svgo')
 
 describe('svg', () => {
   const hexo = new Hexo(__dirname)
-  const s = require('../lib/filter').minifySvg.bind(hexo)
+  const s = require('../lib/svg').minifySvg.bind(hexo)
   const input = '<svg><rect x="1" y="2" width="3" height="4" id="a"/></svg>'
   const path = 'foo.svg'
   // svgo's plugins option
@@ -51,13 +51,6 @@ describe('svg', () => {
     output.on('end', () => {
       expect(result).toBe(data)
     })
-  })
-
-  test('disable', async () => {
-    hexo.config.minify.svg.enable = false
-    const result = await s()
-
-    expect(result).toBeUndefined()
   })
 
   test('empty file', async () => {

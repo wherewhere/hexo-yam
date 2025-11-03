@@ -6,7 +6,7 @@ const { minify: htmlMinify } = require('html-minifier-terser')
 
 describe('html', () => {
   const hexo = new Hexo(__dirname)
-  const h = require('../lib/filter').minifyHtml.bind(hexo)
+  const h = require('../lib/html').minifyHtml.bind(hexo)
   const input = '<p id="">foo</p>'
   const path = 'index.html'
   const defaultCfg = {
@@ -42,18 +42,10 @@ describe('html', () => {
     expect(result).toBe(expected)
   })
 
-  test('disable', async () => {
-    hexo.config.minify.html.enable = false
-
-    const result = await h(input, { path })
-
-    expect(result).toBeUndefined()
-  })
-
   test('empty file', async () => {
     const result = await h('', { path })
 
-    expect(result).toBeUndefined()
+    expect(result).toBe('')
   })
 
   test('option', async () => {

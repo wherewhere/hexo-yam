@@ -5,7 +5,7 @@ const Hexo = require('hexo')
 
 describe('xml', () => {
   const hexo = new Hexo(__dirname)
-  const jsonFn = require('../lib/filter').minifyJson.bind(hexo)
+  const jsonFn = require('../lib/json').minifyJson.bind(hexo)
   const path = 'foo.json'
   const input = '{\n\t"vitae": "hendrerit",\n\t"tristique": [\n\t\t"primis",\n\t\t"quam"\n\t]\n}'
   const expected = '{"vitae":"hendrerit","tristique":["primis","quam"]}'
@@ -38,13 +38,6 @@ describe('xml', () => {
     output.on('end', () => {
       expect(result).toBe(expected)
     })
-  })
-
-  test('disable', async () => {
-    hexo.config.minify.json.enable = false
-    const result = await jsonFn()
-
-    expect(result).toBeUndefined()
   })
 
   test('option - verbose', async () => {

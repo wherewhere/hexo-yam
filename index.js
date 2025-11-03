@@ -103,7 +103,7 @@ hexo.config.minify.brotli = {
 }
 
 hexo.config.minify.zstd = {
-  enable: false,
+  enable: true,
   priority: 10,
   verbose: false,
   include: ['*.html', '*.css', '*.js', '*.map', '*.wasm', '*.txt', '*.ttf', '*.atom', '*.stl', '*.xml', '*.svg', '*.eot', '*.json', '*.webmanifest'],
@@ -141,7 +141,7 @@ if (hexo.config.minify.enable === true && !(hexo.config.minify.previewServer ===
   if (hexo.config.minify.json.enable === true) {
     hexo.extend.filter.register('after_generate', require('./lib/json').minifyJson, hexo.config.minify.json.priority)
   }
-  if (hexo.config.minify.gzip.enable || hexo.config.minify.brotli.enable) {
+  if (hexo.config.minify.gzip.enable || hexo.config.minify.brotli.enable || hexo.config.minify.zstd.enable) {
     const zlib = require('./lib/zlib')
     if (hexo.config.minify.gzip.enable === true) {
       hexo.extend.filter.register('after_generate', zlib.gzipFn, hexo.config.minify.gzip.priority)
@@ -149,13 +149,8 @@ if (hexo.config.minify.enable === true && !(hexo.config.minify.previewServer ===
     if (hexo.config.minify.brotli.enable === true) {
       hexo.extend.filter.register('after_generate', zlib.brotliFn, hexo.config.minify.brotli.priority)
     }
-  }
-  if (hexo.config.minify.zstd.enable === true) {
-    try {
-      hexo.extend.filter.register('after_generate', require('./lib/zstd').zstdFn, hexo.config.minify.zstd.priority)
-    } catch (ex) {
-      const log = hexo.log || console
-      log.warn(`ZSTD load failed. ${ex}`)
+    if (hexo.config.minify.zstd.enable === true) {
+      hexo.extend.filter.register('after_generate', zlib.zstdFn, hexo.config.minify.zstd.priority)
     }
   }
 }

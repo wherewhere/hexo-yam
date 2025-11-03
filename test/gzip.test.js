@@ -9,7 +9,7 @@ const unzip = promisify(zlib.unzip)
 
 describe('gzip', () => {
   const hexo = new Hexo(__dirname)
-  const g = require('../lib/filter').gzipFn.bind(hexo)
+  const g = require('../lib/zlib').gzipFn.bind(hexo)
   const path = 'foo.txt'
   const input = 'Lorem ipsum dolor sit amet consectetur adipiscing elit fusce'
 
@@ -46,13 +46,6 @@ describe('gzip', () => {
       expect(resultUnzip.toString()).toBe(input)
       expect(expectedUnzip.toString()).toBe(input)
     })
-  })
-
-  test('disable', async () => {
-    hexo.config.minify.gzip.enable = false
-    const result = await g()
-
-    expect(result).toBeUndefined()
   })
 
   test('empty file', async () => {
