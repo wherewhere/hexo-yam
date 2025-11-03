@@ -119,16 +119,14 @@ if (hexo.config.minify.enable === true && !(hexo.config.minify.previewServer ===
   if (hexo.config.minify.css.enable === true) {
     if (hexo.config.minify.css.sourceMap) {
       hexo.extend.filter.register('after_generate', require('./lib/css').minifyCssWithMap, hexo.config.minify.js.priority)
-    }
-    else {
+    } else {
       hexo.extend.filter.register('after_render:css', require('./lib/css').minifyCss, hexo.config.minify.css.priority)
     }
   }
   if (hexo.config.minify.js.enable === true) {
     if (hexo.config.minify.js.sourceMap) {
       hexo.extend.filter.register('after_generate', require('./lib/js').minifyJsWithMap, hexo.config.minify.js.priority)
-    }
-    else {
+    } else {
       hexo.extend.filter.register('after_render:js', require('./lib/js').minifyJs, hexo.config.minify.js.priority)
     }
   }
