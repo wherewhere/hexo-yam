@@ -7,6 +7,7 @@ const { minify: terserMinify } = require('terser')
 describe('js', () => {
   const hexo = new Hexo(__dirname)
   const j = require('../lib/js').minifyJs.bind(hexo)
+  const jm = require('../lib/js').minifyJsWithMap.bind(hexo)
   const input = 'var o = { "foo": 1, bar: 3 };'
   const path = 'foo.js'
   let expected = ''
@@ -28,6 +29,7 @@ describe('js', () => {
         globOptions: { basename: true }
       }
     }
+    hexo.route.set(path, input)
   })
 
   test('default', async () => {
@@ -38,10 +40,31 @@ describe('js', () => {
     expect(result).toBe(expected)
   })
 
+  test('default with map', async () => {
+    await jm()
+
+    const output = hexo.route.get(path)
+    let result = ''
+    output.on('data', (chunk) => (result += chunk))
+    output.on('end', () => {
+      expect(result).toBeDefined()
+      expect(expected).toBeDefined()
+      expect(result).toBe(expected + '\n//# sourceMappingURL=foo.js.map')
+    })
+  })
+
   test('empty file', async () => {
     const result = await j('', { path })
 
     expect(result).toBe('')
+  })
+
+  test('empty file with map', async () => {
+    hexo.route.set(path, '')
+    const result = await jm()
+
+    expect(result).toBeDefined()
+    expect(result[0]).toBeUndefined()
   })
 
   test('option', async () => {

@@ -7,6 +7,7 @@ const CleanCSS = require('clean-css')
 describe('css', () => {
   const hexo = new Hexo(__dirname)
   const c = require('../lib/css').minifyCss.bind(hexo)
+  const cm = require('../lib/css').minifyCssWithMap.bind(hexo)
   const input = 'foo { bar: baz; } foo { aaa: bbb; }'
   const path = 'foo.css'
 
@@ -20,6 +21,7 @@ describe('css', () => {
         globOptions: { basename: true }
       }
     }
+    hexo.route.set(path, input)
   })
 
   test('default', async () => {
@@ -29,10 +31,30 @@ describe('css', () => {
     expect(result).toBe(styles)
   })
 
+  test('default with map', async () => {
+    await cm()
+    const { styles } = await new CleanCSS(hexo.config.minify.css).minify(input)
+
+    const output = hexo.route.get(path)
+    let result = ''
+    output.on('data', (chunk) => (result += chunk))
+    output.on('end', () => {
+      expect(result).toBe(styles + '\n/*# sourceMappingURL=foo.css.map */')
+    })
+  })
+
   test('empty file', async () => {
     const result = await c('', { path })
 
     expect(result).toBe('')
+  })
+
+  test('empty file with map', async () => {
+    hexo.route.set(path, '')
+    const result = await cm()
+
+    expect(result).toBeDefined()
+    expect(result[0]).toBeUndefined()
   })
 
   test('option', async () => {
